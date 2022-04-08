@@ -1,0 +1,10 @@
+{
+  "stages": [
+    { "duration": "30s", "target": 1 },
+    { "duration": "30s", "target": 3 }
+  ],
+  "tags": {
+    "test_type": "load",
+    "api_name": "My API"
+  }
+}

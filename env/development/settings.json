@@ -1,0 +1,8 @@
+{
+  "settings": {
+    "base_url": "http://development_example/rest/API+Pastry+-+2.0",
+    "prefix_path": "/2.0.0",
+    "pastry_path": "/pastry"
+  },
+  "test_includes": ["result"]
+}

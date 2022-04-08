@@ -1,0 +1,8 @@
+{
+  "vus": 5,
+  "duration": "10s",
+  "tags": {
+    "test_type": "load",
+    "api_name": "My API"
+  }
+}

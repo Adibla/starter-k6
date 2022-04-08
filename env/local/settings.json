@@ -1,0 +1,7 @@
+{
+  "settings": {
+    "base_url": "http://192.168.178.30:8083/rest/API+Pastry+-+2.0",
+    "prefix_path": "/2.0.0",
+    "pastry_path": "/pastry"
+  }
+}
