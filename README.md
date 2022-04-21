@@ -34,7 +34,7 @@ Visit
 [this](https://microcks.io/) for more informations
 
 ## Update local config
-To try these tests on your local setup, update config file in **./env/local/settings.json** you should sobstitute found base_url ip with your personal machine url (used for infra containers communication)
+To try these tests on your local setup, update config file located in **./env/local/settings.json** you should sobstitute found base_url ip with your personal machine url (used for infra containers communication)
 
 ## Run test
 `$ docker-compose run k6`
@@ -42,13 +42,37 @@ To try these tests on your local setup, update config file in **./env/local/sett
 ## Run test with specific config or custom env
 `$ docker-compose run -e OPTIONS_SET="stress" -e EXECUTION="production" k6`
 
-## Run test with seed generation or existing entity id
-Inserting SEED_OR_RUN with entity to generate (eg. SEED_ON_RUN=pastry) or EXISTING_DATA_ID is required in order to run every tests with success, if you don't include them, some tests will fail
-`$ docker-compose run -e SEED_ON_RUN=pastry k6
-> **SEED_ON_RUN**  generate remote entity using api, if you already have an existing entity use **EXISTING_DATA_ID**
+## Run only some tests
+You can exclude or include some tests based on properties TEST_INCLUDES, and TEST_EXCLUDES, they accept a list of script name as a regex pattern separated by |
+
+`$ docker-compose run -e OPTIONS_SET="stress" -e TEST_INCLUDES="^test_1$|test_2" -e EXECUTION="production" k6`
+
+The example above will include every script name that exactly corrispond to "test_1" and every scripts that contain test_2 in his name.
+
+`$ docker-compose run -e OPTIONS_SET="stress" -e TEST_EXCLUDES="^test_1$|test_2" -e EXECUTION="production" k6`
+
+The example above do the same but in exclusion
+
+You could also pass these properties from settings.json, as properties "test_includes" and "test_excludes"
+
+```json
+{
+    "test_includes": ["^id_1$", "id_2"],
+    "test_excludes": ["id_3"]
+}
+```
+
+## Run test with seed generation or existing seed data
+Inserting **SEED_OR_RUN** or **SEED_DATA** is required in order to run every tests with success, if you don't include them, some tests will fail
+
+`$ docker-compose run -e SEED_ON_RUN=true -e LEGACY_AUTH_TOKEN=xyz k6`
+
+> **SEED_ON_RUN**  generate remote entity using api, if you already have existing data use **SEED_DATA** as an object with required values
+
+`$ docker-compose run -e SEED_ON_RUN=false -e SEED_DATA="{\"id\": \"xyz\"}" k6`
 
 ## Visualize runned tests
-Your local results can be visualized on localhost:3000, exposed as a Graphana Dashhboard.
+Your local results can be visualized on **localhost:3000**, exposed as a Graphana Dashhboard.
 
 ## Project structure detail
 ### `/dashboards`
