@@ -1,6 +1,6 @@
 {
   "name": "starter-k6",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Starter module for K6 scripts",
   "main": "./src/index.js",
   "author": "Adibla",
