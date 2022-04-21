@@ -10,13 +10,12 @@ const environment = {
     options_set: __ENV.OPTIONS_SET ? __ENV.OPTIONS_SET : "load",
     test_includes: __ENV.TEST_INCLUDES ? __ENV.TEST_INCLUDES : false,
     test_excludes: __ENV.TEST_EXCLUDES ? __ENV.TEST_EXCLUDES : false,
-    seed_on_run: __ENV.SEED_ON_RUN ? __ENV.SEED_ON_RUN : "pastry",
-    existing_data_id: __ENV.EXISTING_DATA_ID ? __ENV.EXISTING_DATA_ID : "default_id"
+    seed_on_run: __ENV.SEED_ON_RUN === "true",
+    seed_data: __ENV.SEED_DATA ? __ENV.SEED_DATA : "{}",
 };
 
-if(!environment.seed_on_run && !environment.existing_data_id){
-    // Seed data or existing id are required in order to prevent update failures
-    console.warn("If you don't include existing id (EXISTING_DATA_ID) or generate seed on run (SEED_ON_RUN), some tests could fail")
+if(!environment.seed_on_run && environment.seed_data === "{}"){
+    console.warn("If you don't include existing id (SEED_DATA env) or generate seed on run (SEED_ON_RUN env) some tests could be fail")
 }
 
 let scripts = [  ...pastry_test ];
@@ -34,8 +33,12 @@ data.environment = environment;
 if (environment.test_includes || Array.isArray(data.test_includes) && data.test_includes.length ){
     //Redo check in order to establish  which array to use, env variables have priority
     const tokens = environment.test_includes ? environment.test_includes.split('|') : data.test_includes;
+
+    //Loop over tokens and test regex with every script name in order to exclude every scripts don't match
     scripts = scripts.filter(script => {
-        return tokens.includes(script.name);
+        return tokens.map(tok => {
+            return new RegExp(tok).test(script.name);
+        }).filter(d => d).length
     })
 }
 
@@ -44,7 +47,9 @@ if (environment.test_excludes || Array.isArray(data.test_excludes) && data.test_
     //Redo check in order to establish  which array to use, env variables have priority
     const tokens = environment.test_excludes ? environment.test_excludes.split('|') : data.test_excludes;
     scripts = scripts.filter(script => {
-        return !tokens.includes(script.name);
+        return tokens.map(tok => {
+            return !new RegExp(tok).test(script.name);
+        }).filter(d => d).length
     })
 }
 
@@ -74,7 +79,7 @@ export function setup() {
         }
         return load_entities(data, load_params)
     }
-    return Object.assign({ params: { existing_id: environment.existing_data_id }},data)
+    return Object.assign({ params: { seed_data: environment.seed_data }},data)
 }
 export default function (data) {
     // VU code

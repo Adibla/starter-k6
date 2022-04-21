@@ -4,7 +4,6 @@ import { Rate } from "k6/metrics";
 
 import {
     generate_post_pastry_data,
-    generate_conflict_post_pastry_data,
     generate_patch_pastry_data
 } from "../utils/faker-generator/index.js";
 
@@ -53,7 +52,7 @@ function create_pastry (data) {
 
 function update_pastry (data) {
     group('Update Pastry with Success', () => {
-        const url = `${data.settings.base_url}${data.settings.prefix_path}${data.settings.pastry_path}/${data.params.existing_id}`;
+        const url = `${data.settings.base_url}${data.settings.prefix_path}${data.settings.pastry_path}/${data.params.seed_data.id}`;
         const payload = JSON.stringify(generate_patch_pastry_data());
 
         const params = {
@@ -84,7 +83,7 @@ function update_pastry (data) {
 
 function get_pastry (data) {
     group('Get Pastry with Success', () => {
-        const url = `${data.settings.base_url}${data.settings.prefix_path}${data.settings.pastry_path}/${data.params.existing_id}`;
+        const url = `${data.settings.base_url}${data.settings.prefix_path}${data.settings.pastry_path}/${data.params.seed_data.id}`;
 
         let res = http.get(url);
         let success = check(res, {"is status 200": (r) => r.status === 200});
